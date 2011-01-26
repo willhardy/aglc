@@ -299,11 +299,11 @@
 \newcommand\bkt[1]{\expandafter\ifthenelse{\equal{#1}{}}{}{\ifthenelse{\equal{#1}{0}}{}{(#1)}}}
 \newcommand{\theref}{Part~\Roman{section}\string\bkt{\Alph{subsection}}\string\bkt{\arabic{subsubsection}}\string\bkt{\alph{paragraph}}}
 
-\let\@old@label\label
-\newcommand\flabel[1]{%
-        \protected@edef\@currentlabel{\csname p@section\endcsname\csname theref\endcsname}%
-        \@old@label{#1}}
-\AtBeginDocument{\renewcommand{\label}[1]{\flabel{#1}}}
+%\let\@old@label\label
+%\newcommand\flabel[1]{%
+        %\protected@edef\@currentlabel{\csname p@section\endcsname\csname theref\endcsname}%
+        %\@old@label{#1}}
+% \AtBeginDocument{\renewcommand{\label}[1]{\flabel{#1}}}
 
 
 \newcommand\part{%
@@ -794,7 +794,7 @@
 %%%% Footnotes %%%%%%%%%%
 %\RequirePackage[utf8]{inputenc}
 %\RequirePackage[style=aglc2,bibencoding=latin1]{biblatex}
-\RequirePackage[style=aglc2,sorting=nty]{biblatex}
+\RequirePackage[style=aglc2,sorting=nty,backref=true]{biblatex}
 \RequirePackage{setspace}
 
 % Indicates a manual citation so that the word can be ignored in a word count.
@@ -833,7 +833,6 @@
 %\doublespacing
 \setlength\parindent{0pt}
 \setlength{\parskip}{1.7ex plus 0.5ex minus 0.2ex}
-\renewcommand{\thefootnote}{\arabic{footnote}\,}
 \setlength\footnotesep{9\p@}
 \endinput
 

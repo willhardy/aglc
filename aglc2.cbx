@@ -11,14 +11,13 @@
 \setlength\bibhang{0pt}
 \renewcommand\bibfont{\small}
 
-% AGLC2 Bibliography is to be divided into 5 sections: articles/books/reports, cases, legislation, treaties, other
 \defbibheading{articles}{\subsection*{Articles/Books/Reports}}
 \defbibheading{cases}{\subsection*{Case Law}}
 \defbibheading{legislation}{\subsection*{Legislation}}
 \defbibheading{treaties}{\subsection*{Treaties}}
 \defbibheading{other}{\subsection*{Other Sources}}
 
-\defbibfilter{articles}{\not \keyword{citeonly} \and \( \type{book} \or \type{inbook} \or \type{incollection} \or \type{article} \or \type{thesis} \or \type{inproceeding} \or \type{online} \)}
+\defbibfilter{articles}{\not \keyword{citeonly} \and \( \type{book} \or \type{inbook} \or \type{incollection} \or \type{article} \)}
 \defbibfilter{cases}{\not \keyword{citeonly} \and \type{jurisdiction}}
 \defbibfilter{legislation}{\not \keyword{citeonly} \and \type{legislation}}
 \defbibfilter{treaties}{\not \keyword{citeonly} \and \type{legal}}
@@ -54,7 +53,7 @@
 \newrobustcmd{\mkbibangle}[1]{%
   \begingroup%
   \let\mkbibangle\blx@nobrackets%
-  $<$\,#1\,$>$%
+  $<$#1$>$%
   \endgroup}
 \DeclareFieldFormat{angle}{\mkbibangle{#1}}
 
@@ -70,17 +69,11 @@
 \DeclareFieldFormat{edition}{\wmkbibordinal{#1}\hspace{0.1em}\bibstring{edition}}
 
 
-% Used in the bibliography, begins with last-first, other names are first-last 
-% if too many names show the first with "et al"
+% Used in the bibliography, always last-first, if too many names show the first with "et al"
 \DeclareNameFormat{sortname}{%
-  % Show the first name as last-first
-  \ifthenelse{\value{listcount}=1}{%
-    {\usebibmacro{name:last-first}{#1}{#3}{#5}{#7}}}{%
-  % Show the next few names as first-last
   \ifthenelse{\value{listcount}>1\and\value{listtotal}>\value{liststop}}{}%
-    {\usebibmacro{name:first-last}{#1}{#3}{#5}{#7}}%
-  % If there are more than three names, just put et al
-  \usebibmacro{name:andothers}}}
+    {\usebibmacro{name:last-first}{#1}{#3}{#5}{#7}}%
+  \usebibmacro{name:andothers}}
 
 % Used in all citations, always first-last, if too many names show the first with "et al"
 \DeclareNameFormat{default}{%
@@ -105,18 +98,29 @@
   \iffootnote{%
   \blx@leavevmode%
   \if@filesw%
-    \protected@write\@mainaux{}{\string\bib@aux@backref%
-      {\the\c@instcount}{\bib@field@entrykey}%
+    \protected@write\@mainaux{}{\string\abx@aux@backref%
+      {\the\c@instcount}{\abx@field@entrykey}%
       {\the\c@refsection}{\thefootnote}}%
   \fi}{}}
 
 \DeclareListFormat{last}{\ifthenelse{\value{listcount}=1}{#1}{}}
 \DeclareNameFormat{surname}{\ifthenelse{\value{listcount}=1}{#1}{}}
+\DeclareNameFormat{firstname}{\ifthenelse{\value{listcount}=1}{#3}{}}
 
 \newbibmacro{author/editor:surname}{%
   \ifthenelse{\ifuseauthor\AND\NOT\ifnameundef{author}}%
     {\ifuseauthor{\printnames[surname]{author}}{}}%
     {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[surname]{editor}}{}}}
+
+\newbibmacro{author/editor:firstname}{%
+  \ifthenelse{\ifuseauthor\AND\NOT\ifnameundef{author}}%
+    {\ifuseauthor{\printnames[firstname]{author}}{}}%
+    {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[firstname]{editor}}{}}}
+
+\newbibmacro{author/editor:lastnamefirst}{%
+  \ifthenelse{\ifuseauthor\AND\NOT\ifnameundef{author}}%
+    {\ifuseauthor{\printnames[sortname]{author}}{}}%
+    {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[sortname]{editor}}{}}}
 
 \newbibmacro*{cite}{%
   \global\boolfalse{cbx@loccit}%
@@ -213,7 +217,7 @@
     % If the subsequent text is punctuation, include it before the footnote as per AGLC2.
     {\printfield{title}\printfield{postnote}{\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}}}}
     % If a short name is provided this should be shown in brackets after the case name, before the punctuation
-    {\ifciteseen{\printfield{shorttitle}\printfield{postnote}}{\printfield{title}\printfield{postnote}\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}.}\addspace\mkbibparens{`\printfield{shorttitle}'}}}%
+    {\ifciteseen{\printfield{shorttitle}}{\printfield{title}\printfield{postnote}\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}.}\addspace\mkbibparens{`\printfield{shorttitle}'}}}%
   }
   {}
   {}

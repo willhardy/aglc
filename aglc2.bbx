@@ -3,33 +3,15 @@
 
 \ProvidesFile{aglc2.bbx}
 
+% AGLC likes to use single quotes everywhere, not double quotes.
+\renewrobustcmd{\mkbibquote}[1]{`#1'}
+
 \DeclareFieldFormat{pages}{#1}
 \DeclareFieldFormat{shorttitle}{{\em #1}}
 \DeclareFieldFormat{postnote}{#1}
-\DeclareFieldFormat[incollection]{title}{`#1'}
-\DeclareFieldFormat[misc]{title}{`#1'}
-\DeclareFieldFormat[inproceedings]{title}{`#1'}
-\DeclareFieldFormat[inproceedings]{booktitle}{#1}
-\DeclareFieldFormat[unpublished]{title}{`#1'}
-\DeclareFieldFormat[article]{title}{`#1'}
-\DeclareFieldFormat[thesis]{title}{{\em #1}}
-\DeclareFieldFormat[book]{title}{{\em #1}}
-\DeclareFieldFormat[online]{url}{{\footnotesize \mkbibangle{#1}}}
-
 \renewcommand*{\finalnamedelim}{%
   \ifnum\value{liststop}>2 \fi
   \addspace\bibstring{and}\space}
-
-% AGLC wants the full date, no punctuation "DD Month YYYY"
-\newcommand{\bibdateaglc}{%
-    \@tempcnta0\thefield{day} \the\@tempcnta\nobreakspace%
-    \mkbibmonth{\thefield{month}}\nobreakspace%
-    \thefield{year}}%
-\newcommand{\biburldateaglc}{%
-    \@tempcnta0\thefield{urlday} \the\@tempcnta\nobreakspace%
-    \mkbibmonth{\thefield{urlmonth}}\nobreakspace%
-    \thefield{urlyear}}%
-
 
 \DeclareBibliographyDriver{shorthands}{%
   \usedriver
@@ -93,10 +75,9 @@
 
 \DeclareBibliographyDriver{legal}{%
   \usebibmacro{bibindex}%
-  \usebibmacro{title}%\setunit{\addcomma\space}%
+  \usebibmacro{title},
   %\setunit{\addcomma\space}
-  \setunit{\addcomma\space}\newblock%
-  \iffieldundef{year}{}{\printtext{opened for signature}\addspace\thefield{day}\addspace\printfield{month}\addspace\printfield{year}}%
+  opened for signature \thefield{day}\setunit{\space}\printfield{month} \printfield{year}
   \setunit{\addcomma\space}\newblock%
   \iflistundef{organization}{}{%
     \printlist[endash]{organization}%
@@ -115,7 +96,7 @@
 
 \DeclareBibliographyDriver{article}{%
   \usebibmacro{bibindex}%
-  \usebibmacro{author/editor}%
+  \usebibmacro{author/editor:lastnamefirst}%
   \setunit{\addcomma\space}\newblock
   \usebibmacro{title}%
   \setunit{\space}\newblock
@@ -133,7 +114,7 @@
 
 \DeclareBibliographyDriver{book}{%
   \usebibmacro{bibindex}%
-  \usebibmacro{author/editor}%
+  \usebibmacro{author/editor:lastnamefirst}%
   \setunit{\addcomma\space}\newblock%
   \usebibmacro{maintitle+title}%
   \setunit{\addspace}\newblock%
@@ -148,7 +129,7 @@
 
 \DeclareBibliographyDriver{incollection}{%
   \usebibmacro{bibindex}%
-  \usebibmacro{author}%
+  \usebibmacro{author/editor:lastnamefirst}%
   \setunit{\addcomma\space}\newblock
   \usebibmacro{maintitle+title}%
   \setunit{\space}\newblock
@@ -165,94 +146,6 @@
   \iffieldundef{postnote}{}{\nopunct}
   }
 \DeclareBibliographyAlias{short:incollection}{incollection}
-
-% Speeches
-
-\DeclareBibliographyDriver{misc}{%
-  \usebibmacro{bibindex}%
-  \usebibmacro{author}%
-  \setunit{\addcomma\space}\newblock
-  \usebibmacro{title}%
-  \setunit{}\newblock%
-  \addspace\mkbibparens{%
-    \printtext{Speech delivered at the}\addspace\printlist{organization}%
-    \setunit{\addcomma\space}\newblock%
-    \printlist{location}%
-    \setunit{\addcomma\space}\newblock%
-    \printtext{\bibdateaglc}}
-  \iffieldundef{postnote}{}{\nopunct}
-  }
-\DeclareBibliographyAlias{short:misc}{misc}
-
-% Thesis/theses
-\DeclareBibliographyDriver{thesis}{%
-  \usebibmacro{bibindex}%
-  \usebibmacro{author}%
-  \setunit{\addcomma\space}\newblock
-  \usebibmacro{title}%
-  \setunit{}\newblock%
-  \addspace\mkbibparens{%
-    \printfield{type}%
-    \setunit{\addcomma\space}\newblock%
-    \printlist{institution}%
-    \setunit{\addcomma\space}\newblock%
-    \printfield{year}}
-  \iffieldundef{postnote}{}{\nopunct}
-  }
-\DeclareBibliographyAlias{short:thesis}{thesis}
-
-% Thesis/theses
-\DeclareBibliographyDriver{unpublished}{%
-  \usebibmacro{bibindex}%
-  \usebibmacro{author}%
-  \setunit{\addcomma\space}\newblock
-  \usebibmacro{title}%
-  \setunit{}\newblock%
-  \addspace\mkbibparens{%
-    \printtext{Working Paper No}\addspace\printfield{number}%
-    \setunit{\addcomma\space}\newblock%
-    \printlist{institution}%
-    \setunit{\addcomma\space}\newblock%
-    \printfield{year}}
-  \iffieldundef{postnote}{}{\nopunct}
-  }
-\DeclareBibliographyAlias{short:thesis}{thesis}
-
-
-% Websites, online/internet material
-\DeclareBibliographyDriver{online}{%
-  \usebibmacro{bibindex}%
-  \usebibmacro{author}%
-  \setunit{\addcomma\space}\newblock
-  \usebibmacro{title}%
-  \addspace\mkbibparens{\setunit{}\newblock\printfield{year}}%
-  \setunit{\space}\newblock%
-  \printlist{organization}%
-  \setunit{\space}\newblock%
-  \printfield{url}%
-  \setunit{\space}\newblock%
-  \addspace\printtext{at}\addspace\biburldateaglc
-  \iffieldundef{postnote}{}{\nopunct}
-  }
-\DeclareBibliographyAlias{short:online}{online}
-
-% Conference papers
-\DeclareBibliographyDriver{inproceedings}{%
-  \usebibmacro{bibindex}%
-  \usebibmacro{author}%
-  \setunit{\addcomma\space}\newblock
-  \usebibmacro{title}%
-  \setunit{}\newblock%
-  \addspace\mkbibparens{%
-    \printtext{Paper presented at the}\addspace\printfield{booktitle}%
-    \setunit{\addcomma\space}\newblock%
-    \printlist{location}%
-    \setunit{\addcomma\space}\newblock%
-    \printtext{\bibdateaglc}}
-  \iffieldundef{postnote}{}{\nopunct}
-  }
-\DeclareBibliographyAlias{short:inproceedings}{inproceedings}
-
 
 \renewbibmacro*{in:}{%
   \bibstring{in}%
