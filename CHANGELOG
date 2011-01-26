@@ -1,0 +1,13 @@
+26 Jan 2011 - Mark Ferraretto
+I checked out the repo and then copied my changes over the top.  It looks like the version checked into the repo is different from the version I downloaded from http://willhardy.com.au/aglc-and-latex/.  I haven't done an extensive comparison but this is what I noticed:
+* The sources posted in git have code for theses, online documents and speeches.  The code I worked on does not
+* The sources posted in git compiled example-document.tex in my TeX distribution (pdfTeX 3.1415926-1.40.11-2.2 (TeX Live 2010/MacPorts 2010_1)) where the sources from the website did not
+* Even though they compiled there were errors namely; 1) 'above n' citations did not have a footnote number and 2) the authors in the bibliography were listed as firstname lastname instead of lastname, firstname.
+
+The version of the sources that I have been working on fix these issues so I am committing my versions over these originals.  I may need to come back and revisit the originals so I can re-introduce the missing components into my working copy
+
+
+
+25 Jan 2011
+Original sources posted by Will Hardy
+
