@@ -217,7 +217,7 @@
     % If the subsequent text is punctuation, include it before the footnote as per AGLC2.
     {\printfield{title}\printfield{postnote}{\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}}}}
     % If a short name is provided this should be shown in brackets after the case name, before the punctuation
-    {\ifciteseen{\printfield{shorttitle}}{\printfield{title}\printfield{postnote}\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}.}\addspace\mkbibparens{`\printfield{shorttitle}'}}}%
+    {\ifciteseen{\printfield{shorttitle}\printfield{postnote}}{\printfield{title}\printfield{postnote}\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}.}\addspace\mkbibparens{`\printfield{shorttitle}'}}}%
   }
   {}
   {}
