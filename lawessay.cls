@@ -794,7 +794,7 @@
 %%%% Footnotes %%%%%%%%%%
 %\RequirePackage[utf8]{inputenc}
 %\RequirePackage[style=aglc2,bibencoding=latin1]{biblatex}
-\RequirePackage[style=aglc2,sorting=nty,backref=true]{biblatex}
+\RequirePackage[style=aglc2,sorting=nty,backref=true,backend=biber]{biblatex}
 \RequirePackage{setspace}
 
 % Indicates a manual citation so that the word can be ignored in a word count.

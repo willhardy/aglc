@@ -2,7 +2,6 @@
 % This file was created by editing the standard biblatex style
 
 \ProvidesFile{verbose-ibid.cbx}
-
 \ExecuteBibliographyOptions{citetracker=context,ibidtracker=constrict,
                             pagetracker,autocite=footnote}
 \providecommand*{\mkibid}[1]{#1}
@@ -69,11 +68,22 @@
 \DeclareFieldFormat{edition}{\wmkbibordinal{#1}\hspace{0.1em}\bibstring{edition}}
 
 
-% Used in the bibliography, always last-first, if too many names show the first with "et al"
+% Used in the bibliography, first name displayed as last-first and subsequent names
+% displayed as first-last.  If too many names show the first with "et al"
 \DeclareNameFormat{sortname}{%
-  \ifthenelse{\value{listcount}>1\and\value{listtotal}>\value{liststop}}{}%
-    {\usebibmacro{name:last-first}{#1}{#3}{#5}{#7}}%
-  \usebibmacro{name:andothers}}
+	\ifthenelse{\value{listcount}=1}
+		{
+			\usebibmacro{name:last-first}{#1}{#3}{#5}{#7}%
+			\usebibmacro{name:andothers}
+		} 
+		{
+  			\ifthenelse{\value{listcount}>1\and\value{listtotal}>\value{liststop}}
+			{}
+			{%
+			    \usebibmacro{name:first-last}{#1}{#3}{#5}{#7}%
+			}%
+		}
+}
 
 % Used in all citations, always first-last, if too many names show the first with "et al"
 \DeclareNameFormat{default}{%
@@ -81,11 +91,12 @@
     \usebibmacro{name:first-last}{#1}{#3}{#5}{#7}}%
   \usebibmacro{name:andothers}}
 
+
 % Print "et al" with only the first author
-\renewbibmacro*{name:andothers}{% 
-  \ifthenelse{\value{listtotal}>\value{liststop}\AND\value{listcount}=2\AND\ifmorenames}%
-    {\addspace\bibstring{andothers}}%
-    {}} 
+%\renewbibmacro*{name:andothers}{% 
+%  \ifthenelse{\value{listtotal}>\value{liststop}\AND\value{listcount}=2\AND\ifmorenames}%
+%    {\addspace\bibstring{andothers}}%
+%    {}} 
 
 \DeclareBibliographyOption{ibidpage}[true]{%
   \ifstrequal{#1}{true}
@@ -117,7 +128,7 @@
     {\ifuseauthor{\printnames[firstname]{author}}{}}%
     {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[firstname]{editor}}{}}}
 
-\newbibmacro{author/editor:lastnamefirst}{%
+\newbibmacro*{author/editor:lastnamefirst}{%
   \ifthenelse{\ifuseauthor\AND\NOT\ifnameundef{author}}%
     {\ifuseauthor{\printnames[sortname]{author}}{}}%
     {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[sortname]{editor}}{}}}
