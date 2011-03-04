@@ -267,11 +267,20 @@
 				\iffieldundef{prenote}
 				{} % No need to print anything if there's no prenote
 				{%
-					% Print a footnote with the note field and then the prenote
-					% as a pinpoint afterwards.  Note the trailing full-stop
-					\mkbibfootnote{%
-						\printfield[citecase]{note}%
-						\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+					%Manage ibids
+					\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
+					{%
+						\mkbibfootnote{%
+							\usebibmacro{cite:ibid}%
+							\setunit{\space}\newblock\printfield{prenote}\setunit{}.%
+						}%
+					} {%
+						% Print a footnote with the note field and then the prenote
+						% as a pinpoint afterwards.  Note the trailing full-stop
+						\mkbibfootnote{%
+							\printfield[citecase]{note}%
+							\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+						}
 					}
 				}
 				\iffieldundef{postnote}
@@ -284,7 +293,8 @@
 			{% Print the first citation
 				\printfield{title}%
 				%
-				% Print the footnote
+				% Print the footnote. No need to manage ibids as this is the first 
+				% occurrence of the citation
 				\mkbibfootnote{%
 					\printfield[citecase]{note}%
 					% Print the prenote if it exists
@@ -296,7 +306,7 @@
 						\printfield{prenote}%
 						\setunit{}.%
 					}%
-				}
+				}%
 				%
 				% Print a postnote if it exists
 				\iffieldundef{postnote}
@@ -315,6 +325,63 @@
 				}
 			}
 				
+	}
+	{}
+	{}
+	{}
+\DeclareCiteCommand{\footcase}
+	{}
+	{
+		\ifciteseen
+		{%
+			\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
+			{%
+				\mkbibfootnote{\usebibmacro{cite:ibid}}%
+			} {%
+				\mkbibfootnote{%
+					% First print the title or the shorttitle
+					\iffieldundef{shorttitle}
+					{%
+						\printfield{title}%
+					}
+					{%
+						\printfield{shorttitle}%
+					}%
+					%
+					% Always print the note
+					\addspace\printfield[citecase]{note}%
+					%
+					% Print the pinpoint if it exists
+					\iffieldundef{prenote}
+					{}
+					{%
+						\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+					}
+				}
+			}
+		} {
+			\mkbibfootnote{%
+				% If the citation is not seen always print the title first
+				\printfield{title}%
+				%
+				% Always print the note
+				\addspace\printfield[citecase]{note}%
+				%
+				% Print the pinpoint if it exists
+				\iffieldundef{prenote}
+				{}
+				{%
+					\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+				}%
+				% Print the shorttitle at the end if it exists
+				\iffieldundef{shorttitle}
+				{}
+				{%
+					\addspace%
+					\mkbibparens{`\printfield{shorttitle}'}%
+				}%
+			}
+		}
 	}
 	{}
 	{}
