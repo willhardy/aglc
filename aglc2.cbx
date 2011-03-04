@@ -221,18 +221,77 @@
   {\usebibmacro{postnote}}
 
 % TODO: Allow cases to be cited in footnotes (inline citation).
+% TODO: Ibid should be allowed for \case but not above n.
+% TODO: Also seem the note, pinpoint format of the footnote is no longer valid.
 \DeclareCiteCommand{\case}
-  {}
-  {\iffieldundef{shorttitle}%
-    % Not sure whether I want to footnote every time a case is mentioned... (to do: maybe just the first time?)
-    % If the subsequent text is punctuation, include it before the footnote as per AGLC2.
-    {\printfield{title}\printfield{postnote}{\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}}}}
-    % If a short name is provided this should be shown in brackets after the case name, before the punctuation
-    {\ifciteseen{\printfield{shorttitle}\printfield{postnote}}{\printfield{title}\printfield{postnote}\mkbibfootnote{\printfield[citecase]{note}\iffieldundef{prenote}{}{\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}}.}\addspace\mkbibparens{`\printfield{shorttitle}'}}}%
-  }
-  {}
-  {}
-
+	{}
+	{
+		\ifciteseen
+			{
+				% First print the mainline title and a postnote if it exists
+				\iffieldundef{shorttitle}
+				{
+					\printfield{title}%
+				} {
+					\printfield{shorttitle}%
+				}%
+				% Now print the footnote but only if the prenote exists.
+				% Note the trailin full-stop at the end.
+				\iffieldundef{prenote}
+				{} % No need to print anything if there's no prenote
+				{%
+					% Print a footnote with the note field and then the prenote
+					% as a pinpoint afterwards.  Note the trailing full-stop
+					\mkbibfootnote{%
+						\printfield[citecase]{note}%
+						\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+					}
+				}
+				\iffieldundef{postnote}
+					{} % Do nothing if the postnote is not defined
+					{%
+						% Print a space and the postnote
+						\setunit{\space}\newblock\printfield{postnote}\setunit{}%
+					}%
+			}
+			{% Print the first citation
+				\printfield{title}%
+				%
+				% Print the footnote
+				\mkbibfootnote{%
+					\printfield[citecase]{note}%
+					% Print the prenote if it exists
+					\iffieldundef{prenote}
+					{}
+					{%
+						\setunit{\addcomma\space}%
+						\newblock%
+						\printfield{prenote}%
+						\setunit{}.%
+					}%
+				}
+				%
+				% Print a postnote if it exists
+				\iffieldundef{postnote}
+					{} % Do nothing if the postnote is not defined
+					{%
+						% Print a space and the postnote
+						\setunit{\space}\newblock\printfield{postnote}\setunit{}%
+					}%
+				%
+				% Print the short title if it exists
+				\iffieldundef{shorttitle}
+				{}
+				{%
+					\addspace%
+					\mkbibparens{`\printfield{shorttitle}'}%
+				}
+			}
+				
+	}
+	{}
+	{}
+	{}
 
 \DeclareCiteCommand{\cite}
   {\usebibmacro{prenote}}
