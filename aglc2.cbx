@@ -134,17 +134,44 @@
     {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[sortname]{editor}}{}}}
 
 \newbibmacro*{cite}{%
-  \global\boolfalse{cbx@loccit}%
-  \ifciteseen{%
-    \iffieldundef{shorthand}%
-       {\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}%
-          {\usebibmacro{cite:ibid}}%
-          {\ifthenelse{\(\equal{\thefield{entrytype}}{jurisdiction}\or\equal{\thefield{entrytype}}{legislation}%
-                            \or\equal{\thefield{entrytype}}{legal}\)\or\not\ifciteseen}%
-             {\usebibmacro{cite:short}}%
-             {\usebibmacro{author/editor:surname}\addcomma\addspace above n~\printlist[last]{pageref}}}%
-       {\usebibmacro{cite:shorthand}}}}%
-    {\usebibmacro{cite:full}}}
+	\global\boolfalse{cbx@loccit}%
+	\ifciteseen
+	{%
+		\iffieldundef{shorthand}
+		{%
+			\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
+			{%
+				% citeibid is true and this citation has been seen on this page previously
+				% and citation is in a footnote
+				\usebibmacro{cite:ibid}%
+			} {%else
+				% either citeibid is false or this is the first time the citation appears
+				% on this page
+				\ifthenelse{\(\equal{\thefield{entrytype}}{jurisdiction}\or%
+						\equal{\thefield{entrytype}}{legislation}\or%
+						\equal{\thefield{entrytype}}{legal}\)%
+					\or\not\ifciteseen}
+             			{%
+					% If the entry is a jurisdiction or legislation or legal
+					% or if the citation has not been seen before
+					% ie: this is how to print a first citation.  Legislation, legal and
+					% jurisdictions are always printed as though they were a first citation.
+					\usebibmacro{cite:short}%
+				} {% else
+					% Must be something else or a subsequent citation
+					\usebibmacro{author/editor:surname}%
+					\addcomma\addspace above n~\printlist[last]{pageref}
+				}
+			} {%
+				% shorthand field is defined
+				\usebibmacro{cite:shorthand}%
+			}
+		}
+	} {%
+		% citation has not been seen before
+		\usebibmacro{cite:full}
+	}
+}
 
 
 \newbibmacro*{cite:full}{%
@@ -294,7 +321,7 @@
 	{}
 
 \DeclareCiteCommand{\cite}
-  {\usebibmacro{prenote}}
+  {\iffootnote{}{\citetrackerfalse}\usebibmacro{prenote}}
   {\usebibmacro{citeindex}%
    \usebibmacro{cite}}
   {\multicitedelim}
