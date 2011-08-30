@@ -121,7 +121,7 @@
       }%
    \renewcommand\newblock{\par}}%
 }
-\ExecuteOptions{letterpaper,10pt,oneside,onecolumn,final}
+\ExecuteOptions{a4paper,11pt,oneside,onecolumn,final}
 \ProcessOptions
 \input{size1\@ptsize.clo}
 \setlength\lineskip{1\p@}
@@ -189,18 +189,20 @@
   \null\vfil
   \begin{center}%
   {\centerline{\Large\noindent \MakeUppercase{\printsubjectnumber{} \printsubjectname}}}   %Other informations
+  {\ifthenelse{\equal{\printlecturer}{}}{}{{\MakeUppercase{Lecturer: \it \printlecturer{}}}}}
   \vskip 60\p@
     {\LARGE\bf\MakeUppercase{\@title} \par}%     % Title in uppercase, bold and large
     \vskip 3em%
     {\large
      \lineskip .75em%
       \begin{tabular}[t]{c}%
-        \Large\sc\@author	%author large and small caps
+        \Large\sc\@author\\	%author large and small caps
+  {\ifthenelse{\equal{\printstudentnumber}{}}{}{{\small{\printstudentnumber{}}}}}
       \end{tabular}\par}%
-      \vskip 1.5em%
+      \vskip 2.5em%
     {\large\it \@date \par}%       % Set date in \large size.
   %{{\MakeUppercase{\it \printquestion}}}	%more other information
-  {\ifthenelse{\equal{\printwordcount}{}}{}{{\MakeUppercase{\it \printwordcount{} Words}}}}
+  {\ifthenelse{\equal{\printwordcount}{}}{}{{\it \printwordcount{} Words}}}
   \end{center}\par
   \@thanks
   \vfil\null
@@ -741,6 +743,16 @@
 \def\lecturer #1{%
 	\def\printlecturer{#1}
 }
+%%% mytitle.  Replaces \title and used in the header
+\def\printmytitle{}
+\def\mytitle #1{%
+	\def\printmytitle{#1}
+}
+%%% myauthor.  Replaces \author and used in the header
+\def\printmyauthor{}
+\def\myauthor #1{%
+	\def\printmyauthor{#1}
+}
 \def\draft{%
 }
 \def\final{%
@@ -765,19 +777,14 @@
 \RequirePackage{fancyhdr}
 \setlength{\headheight}{\baselineskip}
 \newcommand\today{\PrintCurrentMonth{} \the\year{}}
-%\font\headerfont = cmssi10
 \pagestyle{fancy}
 \definecolor{Grey}{rgb}{0.40,0.40,0.40}
 \definecolor{Red}{rgb}{1.00,0.00,0.00}
-%\lhead{\normalfont\color{Grey}\printstudentnumber}
-%\chead{\normalfont\color{Grey}\printsubjectnumber{}\space{\em \printsubjectname}}
-%\rhead{\normalfont\color{Grey}\today}
-\lhead{\normalfont\footnotesize\printstudentnumber}
-\chead{\normalfont\footnotesize\printsubjectnumber{}\space{\em \printsubjectname}}
-\rhead{\normalfont\footnotesize\today}
+\lhead{\small\em \printmytitle}
+\chead{}
+\rhead{\small\em Page \thepage}
 \lfoot{}
-% \cfoot{\normalfont\color{Grey}{\em Page \thepage}}
-\cfoot{{\em \thepage}}
+\cfoot{}
 \rfoot{}
 \renewcommand{\headrulewidth}{0.0pt}
 \renewcommand{\footrulewidth}{0.0pt}
@@ -792,9 +799,7 @@
 \dottedcontents{subparagraph}[6.1em]{\itshape}{2.2em}{0.8pc}{}
 
 %%%% Footnotes %%%%%%%%%%
-%\RequirePackage[utf8]{inputenc}
-%\RequirePackage[style=aglc2,bibencoding=latin1]{biblatex}
-\RequirePackage[style=aglc2,sorting=nty,backref=true,backend=biber]{biblatex}
+\RequirePackage[style=aglc2,sorting=nty,backref=true]{biblatex}
 \RequirePackage{setspace}
 
 % Indicates a manual citation so that the word can be ignored in a word count.
@@ -830,8 +835,13 @@
 \RequirePackage{amssymb}
 %\RequirePackage{inlinebib}
 \RequirePackage{setspace}
-%\doublespacing
+
+% No indentation for paragraphs
 \setlength\parindent{0pt}
+% According to University of New England Style Guide the footnote size
+% should be 10pt.  As the default style for this class is 11pt then setting
+% footnotesize to small will set the footnote point size to 10pt
+\let\footnotesize\small
 \setlength{\parskip}{1.7ex plus 0.5ex minus 0.2ex}
 \setlength\footnotesep{9\p@}
 \endinput

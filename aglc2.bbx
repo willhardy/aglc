@@ -8,6 +8,7 @@
 
 \DeclareFieldFormat{pages}{#1}
 \DeclareFieldFormat{shorttitle}{{\em #1}}
+\DeclareFieldFormat{encyclopaediatitle}{{\em #1}}
 \DeclareFieldFormat{postnote}{#1}
 \renewcommand*{\finalnamedelim}{%
   \ifnum\value{liststop}>2 \fi
@@ -49,7 +50,7 @@
 \DeclareBibliographyDriver{short:jurisdiction}{%
   \usebibmacro{bibindex}%
   \iffieldundef{addendum}{}{\printfield{addendum}\setunit{\addcoma}\newblock}%
-  \usebibmacro{shorthand-or-title}
+  \usebibmacro{shorthand-or-title}%
   \printfield{note}%
   %\setunit{\addcomma}\newblock
   %\usebibmacro{pageref}%
@@ -63,11 +64,12 @@
   %\setunit{\space}\newblock%
   %{\it \printfield{year}}%
   \iffieldundef{note}{}%
-    {\setunit{\space}
+    {\setunit{\space}%
     (\thefield{note})}%
-  \iffieldundef{postnote}{}{\nopunct}
+  \iffieldundef{postnote}{}{\nopunct}%
   }
 \DeclareBibliographyAlias{short:legislation}{legislation}
+
 
 % TREATIES
 % TODO: Cleanup use of spaces, blocks and commas!
@@ -91,6 +93,21 @@
   %\usebibmacro{pageref}%
   }
 \DeclareBibliographyAlias{short:legal}{legal}
+
+% Custom field.  This will print the publisher field in plain text,
+% then the title field is printed in italics and, following, the note field
+% is printed in plain text.  This is meant as a catch-all entry type for
+% stuff such as encyclopaedias and UN documents that do not have a correspondig
+% BibTeX type
+\DeclareBibliographyDriver{manual}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{author/editor}%
+  \setunit{\addcomma\space}%
+  \usebibmacro{title}%
+  \setunit{\addcomma\space}%
+  \iffieldundef{note}{}{\thefield{note}\setunit{\addcomma\space}}%
+}
+  
 
 % ARTICLE (journal article, newspaper article)
 
@@ -225,6 +242,13 @@
       {{\it \thefield{title}\addspace\thefield{year}}}}%
   \newunit}
 
+% Encyclopaedia title in Italics
+\newbibmacro*{encyclopaediatitle}{
+	\setunit{\addspace}%
+	{\it \thefield{encyclopaediatitle}}%
+}
+	
+
 \newbibmacro*{title+issuetitle}{%
   \usebibmacro{periodical}%
   \setunit*{\addspace}%
@@ -260,6 +284,19 @@
        \printfield{year}}}}%
   \newunit}
 
+\newbibmacro*{fulldate}{%
+\iffieldundef{year}{}
+  {\printtext[parens]{%
+      \iffieldundef{month}
+         {\printfield{year}}
+         {\iffieldundef{day}
+            {\printfield{month}\setunit{\addspace}\printfield{year}}
+            {\printtext{\bibdate}}%
+	 }%
+       }%
+  }%
+  \newunit%
+}
 
 % If a year is given, show it in brackets,
 % otherwise, add a comma.
