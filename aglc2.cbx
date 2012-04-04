@@ -133,6 +133,11 @@
     {\ifuseauthor{\printnames[sortname]{author}}{}}%
     {\ifthenelse{\ifuseeditor\AND\NOT\ifnameundef{editor}}{\printnames[sortname]{editor}}{}}}
 
+\newbibmacro*{cite:save}{%
+	\csxdef{cbx@\thefield{entrykey}}{\the\value{instcount}}%
+	\label{cbx@\the\value{instcount}}%
+}
+
 \newbibmacro*{cite}{%
 	\global\boolfalse{cbx@loccit}%
 	\ifciteseen
@@ -159,8 +164,9 @@
 					\usebibmacro{cite:short}%
 				} {% else
 					% Must be something else or a subsequent citation
-					\usebibmacro{author/editor:surname}%
-					\addcomma\addspace above n~\the\value{instcount}%
+					\usebibmacro{author/editor:surname}\addnbspace%
+					above n\addnbspace%
+					\ref{cbx@\csuse{cbx@\thefield{entrykey}}}%
 				}%
 			} {%
 				% shorthand field is defined
@@ -171,6 +177,7 @@
 	} {%
 		% citation has not been seen before
 		\usebibmacro{cite:full}%
+		\usebibmacro{cite:save}%
 	}%
 }
 
