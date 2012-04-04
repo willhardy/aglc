@@ -72,17 +72,14 @@
 % displayed as first-last.  If too many names show the first with "et al"
 \DeclareNameFormat{sortname}{%
 	\ifthenelse{\value{listcount}=1}
-		{
+		{%
 			\usebibmacro{name:last-first}{#1}{#3}{#5}{#7}%
-			\usebibmacro{name:andothers}
-		} 
-		{
+			\usebibmacro{name:andothers}%
+		} {%
   			\ifthenelse{\value{listcount}>1\and\value{listtotal}>\value{liststop}}
-			{}
-			{%
-			    \usebibmacro{name:first-last}{#1}{#3}{#5}{#7}%
-			}%
-		}
+			{}%
+			{\usebibmacro{name:first-last}{#1}{#3}{#5}{#7}}%
+		}%
 }
 
 % Used in all citations, always first-last, if too many names show the first with "et al"
@@ -100,8 +97,8 @@
 
 \DeclareBibliographyOption{ibidpage}[true]{%
   \ifstrequal{#1}{true}
-    {\ExecuteBibliographyOptions{loccittracker=constrict}}
-    {\ExecuteBibliographyOptions{loccittracker=false}}}
+    {\ExecuteBibliographyOptions{loccittracker=constrict}}%
+    {\ExecuteBibliographyOptions{loccittracker=false}}}%
 
 
 % Redefine how backref works, to use footnotes, not pages.
@@ -167,6 +164,7 @@
 					\usebibmacro{author/editor:surname}\addnbspace%
 					above n\addnbspace%
 					\ref{cbx@\csuse{cbx@\thefield{entrykey}}}%
+					\addcomma\nopunct\finentry%
 				}%
 			} {%
 				% shorthand field is defined
@@ -184,8 +182,8 @@
 
 \newbibmacro*{cite:full}{%
   \printtext[bibhypertarget]{%
-    \usedriver
-      {\DeclareNameAlias{sortname}{default}}
+    \usedriver%
+      {\DeclareNameAlias{sortname}{default}}%
       {\thefield{entrytype}}}%
   \usebibmacro{shorthandintro}}
 
@@ -234,7 +232,8 @@
 \newbibmacro*{cite:postnote}{%
   \ifbool{cbx@loccit}
     {}
-    {\usebibmacro{postnote}}}
+    {\usebibmacro{postnote}}%
+}
 
 
 \DeclareCiteCommand{\casename}
@@ -392,11 +391,17 @@
 	{}
 
 \DeclareCiteCommand{\cite}
-  {\iffootnote{}{\citetrackerfalse}\usebibmacro{prenote}}
-  {\usebibmacro{citeindex}%
-   \usebibmacro{cite}}
-  {\multicitedelim}
-  {\usebibmacro{cite:postnote}}
+{%
+	\iffootnote
+		{}
+		{\citetrackerfalse}\usebibmacro{prenote}%
+}
+{%
+	\usebibmacro{citeindex}%
+   	\usebibmacro{cite}%
+}
+{\multicitedelim}
+{\usebibmacro{cite:postnote}}
 
 \DeclareCiteCommand{\parencite}[\mkbibparens]
   {\usebibmacro{prenote}}
