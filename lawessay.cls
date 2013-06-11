@@ -192,6 +192,7 @@
   {\ifthenelse{\equal{\printlecturer}{}}{}{{\MakeUppercase{Lecturer: \it \printlecturer{}}}}}
   \vskip 60\p@
     {\LARGE\bf\MakeUppercase{\@title} \par}%     % Title in uppercase, bold and large
+  {{\Large\sc{\it \printquestion}}}	%more other information
     \vskip 3em%
     {\large
      \lineskip .75em%
@@ -201,7 +202,6 @@
       \end{tabular}\par}%
       \vskip 2.5em%
     {\large\it \@date \par}%       % Set date in \large size.
-  %{{\MakeUppercase{\it \printquestion}}}	%more other information
   {\ifthenelse{\equal{\printwordcount}{}}{}{{\it \printwordcount{} Words}}}
   \end{center}\par
   \@thanks
@@ -801,6 +801,9 @@
 %%%% Footnotes %%%%%%%%%%
 \RequirePackage[style=aglc2,sorting=nty,backref=true]{biblatex}
 \RequirePackage{setspace}
+%%%% These two lines enable better formatting of the footnotes
+\usepackage[hang,flushmargin]{footmisc}
+\footnotesize\setlength{\footnotemargin}{1.5em}\normalsize
 
 % Indicates a manual citation so that the word can be ignored in a word count.
 % FIXME: Allow explicit second argument.
