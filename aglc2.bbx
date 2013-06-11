@@ -103,7 +103,7 @@
   \usebibmacro{bibindex}%
   \usebibmacro{author/editor}%
   \setunit{\addcomma\space}%
-  \usebibmacro{title}%
+  \usebibmacro{title}\addnbspace%
   \setunit{\addcomma\space}%
   \iffieldundef{note}{}{\thefield{note}\setunit{\addcomma\space}}%
 }
@@ -165,12 +165,26 @@
   }
 \DeclareBibliographyAlias{short:incollection}{incollection}
 
+%%% Webpage.  Use the online driver. Website and Url don't seem to work
+%%% and I don't know enough LaTeX to fix it.
+\DeclareBibliographyDriver{online}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{author/editor:lastnamefirst}%
+  \setunit{\addcomma\space}\newblock
+  \usebibmacro{title}%
+  \setunit{\space}\newblock
+  \usebibmacro{fulldate}%
+  \setunit{\space}\newblock
+  \usebibmacro{online}%
+  }
+\DeclareBibliographyAlias{short:online}{online}
+
 %\renewbibmacro*{in:}{%
 %  \bibstring{in}%
 %  \setunit{\space}}
 
 \newbibmacro*{online}{%
-  \iffieldundef{url}{}{\printfield[angle]{url}\iffieldundef{note}{}{ at \printfield{note}}}%
+  \iffieldundef{url}{}{\iffieldundef{note}{}{\printfield{note}\setunit{\space}}\printfield[angle]{url}}%
   }
 
 \renewbibmacro*{author}{%
@@ -319,7 +333,7 @@
   \ifnameundef{translator}{}{\printnames{translator} trans\addcomma\addspace}%
   \iffieldundef{note}{}{first published \printfield{note}\addcomma\addspace}%
   \iffieldundef{edition}
-    {\printfield{year}}%
+    {\printlist{publisher}\setunit{\addcomma\addspace}\printfield{year}}%
     {\printlist{publisher}\setunit{\addcomma\addspace}\printfield{edition}\setunit{\addcomma\addspace}\printfield{year}}%
   )}
 
