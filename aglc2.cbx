@@ -48,13 +48,14 @@
 \ifthenelse{\value{listcount}<\value{liststop}} 
 {--} 
 {}}
-
+\renewcommand*{\UrlFont}{\normalfont}
 \newrobustcmd{\mkbibangle}[1]{%
   \begingroup%
   \let\mkbibangle\blx@nobrackets%
   $<$#1$>$%
   \endgroup}
 \DeclareFieldFormat{angle}{\mkbibangle{#1}}
+\DeclareFieldFormat{url}{\mkbibangle{\url{#1}}}
 
 
 \def\wmkbibordinal#1{%
@@ -146,6 +147,7 @@
 				% citeibid is true and this citation has been seen on this page previously
 				% and citation is in a footnote
 				\usebibmacro{cite:ibid}%
+				\setunit{\space}\newblock\printfield{prenote}\setunit{}%
 			} {%else
 				% either citeibid is false or this is the first time the citation appears
 				% on this page
@@ -164,7 +166,9 @@
 					\usebibmacro{author/editor:surname}\addnbspace%
 					above n\addnbspace%
 					\ref{cbx@\csuse{cbx@\thefield{entrykey}}}%
-					\addcomma\nopunct\finentry%
+					\iffieldundef{postnote}%
+						{.\nopunct}%	
+						{\addcomma\nopunct\finentry}%
 				}%
 			} {%
 				% shorthand field is defined
@@ -227,7 +231,7 @@
   \printtext[bibhyperref]{Ibid}%
   \ifloccit
     {\global\booltrue{cbx@loccit}}
-    {}\iffieldundef{postnote}{}{\nopunct}}
+    {}\iffieldundef{postnote}{.\nopunct}{\nopunct}}
 
 \newbibmacro*{cite:postnote}{%
   \ifbool{cbx@loccit}
@@ -278,7 +282,6 @@
 					{%
 						\mkbibfootnote{%
 							\usebibmacro{cite:ibid}%
-							\setunit{\space}\newblock\printfield{prenote}\setunit{}.%
 						}%
 					} {%
 						% Print a footnote with the note field and then the prenote
@@ -290,7 +293,7 @@
 					}%
 				}%
 				\iffieldundef{postnote}%
-					{} % Do nothing if the postnote is not defined
+					{}% Do nothing if the postnote is not defined
 					{%
 						% Print a space and the postnote
 						\setunit{\space}\newblock\printfield{postnote}\setunit{}%
