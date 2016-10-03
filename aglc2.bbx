@@ -46,6 +46,7 @@
   \printfield{note}%
   %\setunit{\addcomma}\newblock
   %\usebibmacro{pageref}%
+  \iffieldundef{postnote}{}{\nopunct}%
   }
 \DeclareBibliographyDriver{short:jurisdiction}{%
   \usebibmacro{bibindex}%
@@ -54,6 +55,7 @@
   \printfield{note}%
   %\setunit{\addcomma}\newblock
   %\usebibmacro{pageref}%
+  \iffieldundef{postnote}{}{\nopunct}%
   }
 
 % LEGISLATION
@@ -65,8 +67,7 @@
   %{\it \printfield{year}}%
   \iffieldundef{note}{}%
     {\addnbspace%
-    (\thefield{note})}%
-  \iffieldundef{postnote}{}{\nopunct}%
+    (\thefield{note})}\iffieldundef{postnote}{}{\nopunct}%
   }
 \DeclareBibliographyAlias{short:legislation}{legislation}
 
@@ -140,8 +141,11 @@
   \newunit\newblock%
   \usebibmacro{origtitle}%
   \newunit\newblock%
-  \setunit{}%
-  \iffieldundef{postnote}{}{\nopunct}%
+% For some reason I need to insert a space only in the book driver's postnote
+% I don't have to do this in the case,legislation or report drivers
+% as of 3 Oct 2016 I haven't used any other drivers with
+% this new code.
+  \iffieldundef{postnote}{}{\space\nopunct}%
   }
 \DeclareBibliographyAlias{short:book}{book}
 
@@ -178,6 +182,27 @@
   \usebibmacro{online}%
   }
 \DeclareBibliographyAlias{short:online}{online}
+
+%%% Report bibliography driver.
+%%% Created by Mark Ferraretto 30 Sep 2016
+%%% Using these fields from AGLC
+%%% Author      : Reporting body (eg: ALRC)
+%%% Title       : Title of the report
+%%% Note        : 'Report', 'Interim Report', 'Discussion Paper'
+%%% Pages       : Report number
+%%% Year        : Year of report
+\DeclareBibliographyDriver{report}{%
+  \usebibmacro{bibindex}%
+  \usebibmacro{author/editor}%
+  \setunit{\addcomma\space}\newblock
+  \usebibmacro{title}%
+  \setunit{\addcomma\space}\newblock
+  \printfield{note} No \printfield{pages}%
+  \setunit{\space}\newblock
+  \printfield[parens]{year}%
+  \iffieldundef{postnote}{}{\nopunct}%
+}
+\DeclareBibliographyAlias{short:report}{report}
 
 %\renewbibmacro*{in:}{%
 %  \bibstring{in}%

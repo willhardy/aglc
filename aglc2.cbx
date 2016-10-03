@@ -16,13 +16,13 @@
 \defbibheading{treaties}{\subsection*{Treaties}}
 \defbibheading{other}{\subsection*{Other Sources}}
 
-\defbibfilter{articles}{\not \keyword{citeonly} \and \( \type{book} \or \type{inbook} \or \type{incollection} \or \type{article} \)}
+\defbibfilter{articles}{\not \keyword{citeonly} \and \( \type{book} \or \type{inbook} \or \type{incollection} \or \type{article} \or \type{report} \)}
 \defbibfilter{cases}{\not \keyword{citeonly} \and \type{jurisdiction}}
 \defbibfilter{legislation}{\not \keyword{citeonly} \and \type{legislation}}
 \defbibfilter{treaties}{\not \keyword{citeonly} \and \type{legal}}
 \defbibfilter{other}{\not\keyword{citeonly} \and \not \( \type{book} \or \type{inbook} \or \type{incollection} 
                      \or \type{article} \or \type{jurisdiction} \or 
-                     \type{legislation} \or \type{legal} \)}
+                     \type{legislation} \or \type{legal} \or \type{report} \)}
 
 \DefineBibliographyStrings{english}{%
   andothers            = {et al},
@@ -154,7 +154,7 @@
 				\ifthenelse{\(\equal{\thefield{entrytype}}{jurisdiction}\or%
 						\equal{\thefield{entrytype}}{legislation}\or%
 						\equal{\thefield{entrytype}}{legal}\)%
-					\or\not\ifciteseen}
+					\or\not\ifciteseen}%
              			{%
 					% If the entry is a jurisdiction or legislation or legal
 					% or if the citation has not been seen before
@@ -164,11 +164,8 @@
 				} {% else
 					% Must be something else or a subsequent citation
 					\usebibmacro{author/editor:surname}\addnbspace%
-					above n\addnbspace%
-					\ref{cbx@\csuse{cbx@\thefield{entrykey}}}%
-					\iffieldundef{postnote}%
-						{.\nopunct}%	
-						{\addcomma\nopunct\finentry}%
+					above n\addnbspace\ref{cbx@\csuse{cbx@\thefield{entrykey}}}%
+					\iffieldundef{postnote}{.\nopunct}{\nopunct\finentry}%
 				}%
 			} {%
 				% shorthand field is defined
@@ -176,7 +173,7 @@
 			}%
 		}%
 
-	} {%
+	}{%
 		% citation has not been seen before
 		\usebibmacro{cite:full}%
 		\usebibmacro{cite:save}%
@@ -234,11 +231,14 @@
     {}\iffieldundef{postnote}{.\nopunct}{\nopunct}}
 
 \newbibmacro*{cite:postnote}{%
-  \ifbool{cbx@loccit}
-    {}
+  \ifbool{cbx@loccit}%
+    {}%
     {\usebibmacro{postnote}}%
 }
 
+\renewbibmacro*{postnote}{%
+  \setunit{}\newblock\printfield{postnote}\setunit{}
+}
 
 \DeclareCiteCommand{\casename}
   {\citetrackerfalse
@@ -272,10 +272,10 @@
 				} {%
 					\printfield{shorttitle}%
 				}%
-				% Now print the footnote but only if the prenote exists.
+				% Now print the footnote but only if the postnote exists.
 				% Note the trailin full-stop at the end.
-				\iffieldundef{prenote}%
-				{} % No need to print anything if there's no prenote
+				\iffieldundef{postnote}%
+				{} % No need to print anything if there's no postnote
 				{%
 					%Manage ibids
 					\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}%
@@ -284,18 +284,18 @@
 							\usebibmacro{cite:ibid}%
 						}%
 					} {%
-						% Print a footnote with the note field and then the prenote
+						% Print a footnote with the note field and then the postnote
 						% as a pinpoint afterwards.  Note the trailing full-stop
 						\mkbibfootnote{%
 							\printfield[citecase]{note}%
-							\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+							\setunit{\addcomma\space}\newblock\printfield{postnote}\setunit{}.%
 						}%
 					}%
 				}%
 				\iffieldundef{postnote}%
 					{}% Do nothing if the postnote is not defined
 					{%
-						% Print a space and the postnote
+						% Otherwise print a space and the postnote
 						\setunit{\space}\newblock\printfield{postnote}\setunit{}%
 					}%
 			}%
@@ -307,22 +307,22 @@
 				\mkbibfootnote{%
 					\printfield[citecase]{note}%
 					% Print the prenote if it exists
-					\iffieldundef{prenote}
+					\iffieldundef{postnote}
 					{}
 					{%
-						\setunit{\addcomma\space}%
-						\newblock%
-						\printfield{prenote}%
+						\setunit{\space}\newblock%
+						\printfield{postnote}%
 						\setunit{}.%
 					}%
 				}%
 				%
 				% Print a postnote if it exists
-				\iffieldundef{postnote}
+ 				% a prenote is where we keep comments to print after the case.
+				\iffieldundef{prenote}
 					{} % Do nothing if the postnote is not defined
 					{%
 						% Print a space and the postnote
-						\setunit{\space}\newblock\printfield{postnote}\setunit{}%
+						\setunit{\space}\newblock\printfield{prenote}\setunit{}%
 					}%
 				%
 				% Print the short title if it exists
@@ -345,9 +345,9 @@
 			\ifthenelse{\ifciteibid\AND\NOT\iffirstonpage}
 			{%
 				\usebibmacro{cite:ibid}%
-				\iffieldundef{prenote}
+				\iffieldundef{postnote}
 				{} {%
-					\setunit{\space}\newblock\printfield{prenote}\setunit{}.%
+					\setunit{\space}\newblock\printfield{postnote}\setunit{}.%
 				}%
 			} {%
 				% First print the title or the shorttitle
@@ -362,10 +362,10 @@
 				\addspace\printfield[citecase]{note}%
 				%
 				% Print the pinpoint if it exists
-				\iffieldundef{prenote}
+				\iffieldundef{postnote}
 				{}%
 				{%
-					\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+					\setunit{\space}\newblock\printfield{postnote}\setunit{}.%
 				}%
 			}%
 		} {%
@@ -376,9 +376,9 @@
 			\addspace\printfield[citecase]{note}%
 			%
 			% Print the pinpoint if it exists
-			\iffieldundef{prenote}
+			\iffieldundef{postnote}
 			{} {%
-				\setunit{\addcomma\space}\newblock\printfield{prenote}\setunit{}.%
+				\setunit{\space}\newblock\printfield{postnote}\setunit{}.%
 			}%
 			% Print the shorttitle at the end if it exists
 			\iffieldundef{shorttitle}
